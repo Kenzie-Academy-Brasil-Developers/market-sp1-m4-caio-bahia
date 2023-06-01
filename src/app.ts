@@ -5,6 +5,7 @@ const app: Application = express()
 app.use(express.json())
 
 app.post("/products", logics.create)
+app.get("/products", logics.read)
 
 const PORT: number = 3000
 

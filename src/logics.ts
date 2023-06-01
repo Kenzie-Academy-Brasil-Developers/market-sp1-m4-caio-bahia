@@ -18,4 +18,8 @@ const create = (request: Request, response: Response): Response => {
   return response.status(201).json(newProduct)
 }
 
-export default { create }
+const read = (request: Request, response: Response): Response => {
+  return response.status(200).json(database)
+}
+
+export default { create, read }
