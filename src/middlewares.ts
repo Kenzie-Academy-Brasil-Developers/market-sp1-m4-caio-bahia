@@ -28,11 +28,11 @@ const verifyIfNameExists = (
   next: NextFunction
 ): void | Response => {
   const { name } = request.body
-
+  console.log(name)
   if (!name) return next()
 
   const foundName: IProduct | undefined = database.find(
-    (value: IProduct): boolean => value.name === String(name)
+    (value: IProduct): boolean => value.name === name
   )
   if (foundName) {
     return response.status(409).json({ error: "Product already exists." })

@@ -4,17 +4,16 @@ interface IProduct {
   price: number
   weight: number
   section: TSection
+  calories?: number
   expirationDate: Date
 }
 
 type TSection = "food" | "cleaning"
 
 type TProductCreate = Omit<IProduct, "id" | "expirationDate">
-type TProductUpdate = Partial<TProductCreate>
+type TProductUpdate = Partial<IFoodProduct>
+type ICleaningProduct = Omit<IProduct, "calories">
 
-export interface ICleaningProduct extends IProduct {}
-export interface IFoodProduct extends IProduct {
-  calories: number
-}
+export interface IFoodProduct extends IProduct {}
 
-export { TSection, TProductCreate, TProductUpdate, IProduct }
+export { TSection, TProductCreate, TProductUpdate, IProduct, ICleaningProduct }

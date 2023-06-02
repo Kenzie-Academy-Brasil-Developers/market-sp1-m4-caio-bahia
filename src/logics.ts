@@ -17,7 +17,7 @@ const createProducts = (request: Request, response: Response): Response => {
 
   let allProducts: IProduct[] = []
 
-  const date = new Date()
+  const date: Date = new Date()
   date.setDate(date.getDate() + 365)
 
   payload.map((product: TProductCreate) => {
@@ -26,7 +26,7 @@ const createProducts = (request: Request, response: Response): Response => {
     database.push(newproduct)
     idCounter++
   })
-  const totalValue = database.reduce(
+  const totalValue: number = database.reduce(
     (previusValue, currentValue) => previusValue + currentValue.price,
     0
   )
@@ -52,19 +52,28 @@ const updateProduct = (request: Request, response: Response): Response => {
   const { foundProduct, productIndex } = response.locals
   const payload: TProductUpdate = request.body
 
-  const product: IProduct = (database[productIndex] = {
-    ...foundProduct,
-    ...payload
-  })
-  return response.status(200).json(product)
+  if (payload.name) {
+    database[productIndex].name = payload.name
+  }
+  if (payload.price) {
+    database[productIndex].price = payload.price
+  }
+  if (payload.weight) {
+    database[productIndex].weight = payload.weight
+  }
+  if (payload.calories) {
+    database[productIndex].calories = payload.calories
+  }
+
+  return response.status(200).json(database[productIndex])
 }
 
 const deleteProduct = (request: Request, response: Response): Response => {
   const { productIndex } = response.locals
 
-  database.slice(productIndex, 1)
+  database.splice(Number(productIndex), 1)
 
-  return response.status(204).json({ message: "Deleted!" })
+  return response.status(204).json()
 }
 
 export default { createProducts, getAllProducts, getProductById, updateProduct, deleteProduct }
