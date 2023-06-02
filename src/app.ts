@@ -1,11 +1,16 @@
 import express, { Application } from "express"
 import logics from "./logics"
+import middlewares from "./middlewares"
 
 const app: Application = express()
 app.use(express.json())
 
-app.post("/products", logics.create)
-app.get("/products", logics.read)
+app.post("/products", logics.createProducts)
+app.get("/products", logics.getAllProducts)
+
+app.use("/products/:productId", middlewares.verifyIfIdExists)
+
+app.get("/products/:productId", logics.getProductById)
 
 const PORT: number = 3000
 
