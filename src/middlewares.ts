@@ -20,6 +20,23 @@ const verifyIfIdExists = (
     foundProduct,
     productIndex: database.indexOf(foundProduct)
   }
+  return next()
 }
+const verifyIfNameExists = (
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void | Response => {
+  const { name } = request.body
 
-export default { verifyIfIdExists }
+  if (!name) return next()
+
+  const foundName: IProduct | undefined = database.find(
+    (value: IProduct): boolean => value.name === String(name)
+  )
+  if (foundName) {
+    return response.status(409).json({ error: "Product already exists." })
+  }
+  return next()
+}
+export default { verifyIfIdExists, verifyIfNameExists }

@@ -1,5 +1,5 @@
 import { Request, Response, request } from "express"
-import { IProduct, TProductCreate } from "./interfaces"
+import { IProduct, TProductCreate, TProductUpdate } from "./interfaces"
 import database from "./database"
 
 // const getId = (): number => {
@@ -48,4 +48,23 @@ const getProductById = (request: Request, response: Response): Response => {
   return response.status(200).json(findProduct)
 }
 
-export default { createProducts, getAllProducts, getProductById }
+const updateProduct = (request: Request, response: Response): Response => {
+  const { foundProduct, productIndex } = response.locals
+  const payload: TProductUpdate = request.body
+
+  const product: IProduct = (database[productIndex] = {
+    ...foundProduct,
+    ...payload
+  })
+  return response.status(200).json(product)
+}
+
+const deleteProduct = (request: Request, response: Response): Response => {
+  const { productIndex } = response.locals
+
+  database.slice(productIndex, 1)
+
+  return response.status(204).json({ message: "Deleted!" })
+}
+
+export default { createProducts, getAllProducts, getProductById, updateProduct, deleteProduct }

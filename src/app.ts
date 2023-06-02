@@ -5,12 +5,14 @@ import middlewares from "./middlewares"
 const app: Application = express()
 app.use(express.json())
 
-app.post("/products", logics.createProducts)
+app.post("/products", middlewares.verifyIfNameExists, logics.createProducts)
 app.get("/products", logics.getAllProducts)
 
 app.use("/products/:productId", middlewares.verifyIfIdExists)
 
 app.get("/products/:productId", logics.getProductById)
+app.patch("/products/:productId", logics.updateProduct)
+app.delete("/products/:productId", logics.deleteProduct)
 
 const PORT: number = 3000
 
