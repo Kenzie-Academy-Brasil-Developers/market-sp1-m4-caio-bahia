@@ -11,7 +11,7 @@ app.get("/products", logics.getAllProducts)
 app.use("/products/:productId", middlewares.verifyIfIdExists)
 
 app.get("/products/:productId", logics.getProductById)
-app.patch("/products/:productId", logics.updateProduct)
+app.patch("/products/:productId", middlewares.verifyIfNameExists, logics.updateProduct)
 app.delete("/products/:productId", logics.deleteProduct)
 
 const PORT: number = 3000

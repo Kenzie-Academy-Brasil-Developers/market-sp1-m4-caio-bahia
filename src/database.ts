@@ -1,5 +1,5 @@
 import { IProduct } from "./interfaces"
 
-const database: IProduct[] = []
+const market: IProduct[] = []
 
-export default database
+export default market

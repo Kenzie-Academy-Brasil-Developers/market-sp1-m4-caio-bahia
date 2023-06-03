@@ -1,14 +1,6 @@
 import { Request, Response, request } from "express"
 import { IProduct, TProductCreate, TProductUpdate } from "./interfaces"
-import database from "./database"
-
-// const getId = (): number => {
-//   const lastItem: IProduct | undefined = database.sort((a, b): number => a.id - b.id).at(-1)
-//   if (!lastItem) {
-//     return 1
-//   }
-//   return lastItem.id + 1
-// }
+import market from "./database"
 
 let idCounter: number = 1
 
@@ -23,10 +15,10 @@ const createProducts = (request: Request, response: Response): Response => {
   payload.map((product: TProductCreate) => {
     const newproduct: IProduct = { id: idCounter, ...product, expirationDate: date }
     allProducts.push(newproduct)
-    database.push(newproduct)
+    market.push(newproduct)
     idCounter++
   })
-  const totalValue: number = database.reduce(
+  const totalValue: number = market.reduce(
     (previusValue, currentValue) => previusValue + currentValue.price,
     0
   )
@@ -39,39 +31,39 @@ const createProducts = (request: Request, response: Response): Response => {
 }
 
 const getAllProducts = (request: Request, response: Response): Response => {
-  return response.status(200).json(database)
+  return response.status(200).json(market)
 }
 
 const getProductById = (request: Request, response: Response): Response => {
   const { productId } = request.params
-  const findProduct = database.find((product) => product.id == Number(productId))
+  const findProduct = market.find((product) => product.id == Number(productId))
   return response.status(200).json(findProduct)
 }
 
 const updateProduct = (request: Request, response: Response): Response => {
-  const { foundProduct, productIndex } = response.locals
+  const { productIndex } = response.locals
   const payload: TProductUpdate = request.body
 
   if (payload.name) {
-    database[productIndex].name = payload.name
+    market[productIndex].name = payload.name
   }
   if (payload.price) {
-    database[productIndex].price = payload.price
+    market[productIndex].price = payload.price
   }
   if (payload.weight) {
-    database[productIndex].weight = payload.weight
+    market[productIndex].weight = payload.weight
   }
   if (payload.calories) {
-    database[productIndex].calories = payload.calories
+    market[productIndex].calories = payload.calories
   }
 
-  return response.status(200).json(database[productIndex])
+  return response.status(200).json(market[productIndex])
 }
 
 const deleteProduct = (request: Request, response: Response): Response => {
   const { productIndex } = response.locals
 
-  database.splice(Number(productIndex), 1)
+  market.splice(Number(productIndex), 1)
 
   return response.status(204).json()
 }

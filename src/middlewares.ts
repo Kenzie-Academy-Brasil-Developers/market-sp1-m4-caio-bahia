@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import { IProduct } from "./interfaces"
-import database from "./database"
+import market from "./database"
 
 const verifyIfIdExists = (
   request: Request,
@@ -8,7 +8,7 @@ const verifyIfIdExists = (
   next: NextFunction
 ): void | Response => {
   const { productId } = request.params
-  const foundProduct: IProduct | undefined = database.find(
+  const foundProduct: IProduct | undefined = market.find(
     (value: IProduct): boolean => value.id === Number(productId)
   )
 
@@ -18,25 +18,31 @@ const verifyIfIdExists = (
   response.locals = {
     ...response.locals,
     foundProduct,
-    productIndex: database.indexOf(foundProduct)
+    productIndex: market.indexOf(foundProduct)
   }
   return next()
 }
+
 const verifyIfNameExists = (
   request: Request,
   response: Response,
   next: NextFunction
 ): void | Response => {
-  const { name } = request.body
-  console.log(name)
-  if (!name) return next()
+  const req = request.body
 
-  const foundName: IProduct | undefined = database.find(
-    (value: IProduct): boolean => value.name === name
-  )
-  if (foundName) {
-    return response.status(409).json({ error: "Product already exists." })
+  if (req.length) {
+    req.forEach((product: any) => {
+      const NameSearch: IProduct | undefined = market.find((value) => value.name === product.name)
+      if (NameSearch) {
+        return response.status(409).json({ error: "Product already exists." })
+      }
+    })
+    const NameSearch: IProduct | undefined = market.find((value) => value.name === req.name)
+    if (NameSearch) {
+      return response.status(409).json({ error: "Product already exists." })
+    }
   }
+
   return next()
 }
 export default { verifyIfIdExists, verifyIfNameExists }
